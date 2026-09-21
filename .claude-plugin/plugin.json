@@ -1,0 +1,16 @@
+{
+  "name": "structured-output",
+  "description": "Makes Claude close out work turns in fixed, scannable sections — what was done, how, what failed, next steps, and an open to-do list — so a session can be picked up at a glance.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Hussam Itani",
+    "email": "hitani@byte5.de"
+  },
+  "license": "MIT",
+  "keywords": [
+    "output-format",
+    "response-format",
+    "workflow",
+    "readability"
+  ]
+}

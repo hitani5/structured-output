@@ -1,0 +1,16 @@
+{
+  "name": "byte5",
+  "description": "Internal Claude Code plugins from byte5",
+  "owner": {
+    "name": "byte5",
+    "email": "hitani@byte5.de"
+  },
+  "plugins": [
+    {
+      "name": "structured-output",
+      "description": "Makes Claude close out work turns in fixed, scannable sections — what was done, how, what failed, next steps, and an open to-do list.",
+      "version": "0.1.0",
+      "source": "./"
+    }
+  ]
+}
