@@ -41,7 +41,7 @@ where Claude *does* work get the sections. You can switch modes in plain languag
 ## Install
 
 ```
-/plugin marketplace add byte5/claude-structured-output
+/plugin marketplace add hitani5/structured-output
 /plugin install structured-output@byte5
 ```
 
@@ -49,6 +49,10 @@ Then restart your session, or run `/clear`.
 
 To turn it off at any point: `/plugin` and disable it. Nothing is written to your
 own config, so disabling fully reverts the behavior.
+
+Note that the marketplace is `byte5` while the repo is `hitani5/structured-output` —
+these are independent, and the `@byte5` part is what stays stable if the repo
+ever moves.
 
 ## How it works
 
@@ -76,3 +80,7 @@ Things worth reporting:
 ## Status
 
 v0.1.0 — in testing. Verified working on Claude Code 2.1.278 on macOS.
+
+This repo may move to a `byte5ai` organisation. If it does, GitHub redirects the
+old path, so an install done today keeps working without anyone re-adding the
+marketplace.
