@@ -1,8 +1,8 @@
 {
-  "name": "byte5",
-  "description": "Internal Claude Code plugins from byte5",
+  "name": "hitani5",
+  "description": "Claude Code plugins by Hussam Itani",
   "owner": {
-    "name": "byte5",
+    "name": "Hussam Itani",
     "email": "hitani@byte5.de"
   },
   "plugins": [

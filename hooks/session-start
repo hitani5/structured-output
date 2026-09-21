@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # SessionStart hook for the structured-output plugin.
-# Reads STRUCTURED_OUTPUT.md and injects it into the session as context,
-# which is what makes the format apply to every turn without the user
-# having to keep it in their own CLAUDE.md.
+# Reads STRUCTURED_OUTPUT.md and injects it into the session as context, which
+# is what makes the format apply without the user editing their own CLAUDE.md.
+#
+# Pure bash, no interpreter dependency beyond bash itself, so this runs the same
+# on macOS, Linux and Git Bash on Windows.
 
 set -euo pipefail
 
@@ -10,28 +12,30 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PLUGIN_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 RULES_FILE="${PLUGIN_ROOT}/STRUCTURED_OUTPUT.md"
 
-# Fail silently rather than breaking the user's session start.
+# Never break a session start over a missing file.
 [ -r "$RULES_FILE" ] || exit 0
 
-# python3 ships with macOS and handles JSON escaping correctly, which bash
-# parameter substitution does not for edge cases like control characters.
-python3 - "$RULES_FILE" <<'PY'
-import json, sys
-
-with open(sys.argv[1], encoding="utf-8") as fh:
-    rules = fh.read()
+rules=$(cat "$RULES_FILE")
 
 # Frame the file as an active instruction. Without this it can read as
 # reference material that happens to be in context.
-rules = (
-    "The following describes how you must format your responses in this "
-    "session. Apply it from now on.\n\n" + rules
-)
+preamble="The following describes how you must format your responses in this session. Apply it from now on."
+rules="${preamble}"$'\n\n'"${rules}"
 
-print(json.dumps({
-    "hookSpecificOutput": {
-        "hookEventName": "SessionStart",
-        "additionalContext": rules,
-    }
-}))
-PY
+# Escape for embedding in a JSON string. Backslashes must go first, or the
+# escapes added afterwards get double-escaped.
+escape_for_json() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+escaped=$(escape_for_json "$rules")
+
+# Claude Code reads hookSpecificOutput.additionalContext.
+# printf rather than a heredoc, which hangs on bash 5.3+.
+printf '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"%s"}}\n' "$escaped"

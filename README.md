@@ -42,17 +42,13 @@ where Claude *does* work get the sections. You can switch modes in plain languag
 
 ```
 /plugin marketplace add hitani5/structured-output
-/plugin install structured-output@byte5
+/plugin install structured-output@hitani5
 ```
 
-Then restart your session, or run `/clear`.
+Then run `/clear` or restart — see below.
 
 To turn it off at any point: `/plugin` and disable it. Nothing is written to your
 own config, so disabling fully reverts the behavior.
-
-Note that the marketplace is `byte5` while the repo is `hitani5/structured-output` —
-these are independent, and the `@byte5` part is what stays stable if the repo
-ever moves.
 
 ## How it works
 
@@ -61,7 +57,30 @@ as context. That is the whole mechanism — it does not modify your `~/.claude/C
 or any other file you own, which is why it can be removed cleanly.
 
 Because it is a hook, it runs a small shell script when a session starts. The
-script is `hooks/session-start`; it reads one file and prints JSON.
+script is `hooks/session-start`; it reads one file and prints JSON. It is pure
+bash with no other runtime dependency.
+
+## Platforms
+
+| Platform | Requirement |
+|---|---|
+| macOS | Works as-is |
+| Linux | Works as-is |
+| Windows | Needs bash — Git for Windows, MSYS2 or Cygwin |
+
+On Windows the hook is launched through `hooks/run-hook.cmd`, a polyglot wrapper
+that `cmd.exe` reads as a batch file and Unix shells read as a shell script. It
+looks for Git Bash in the standard install locations, then for `bash` on `PATH`.
+
+If no bash is found it exits quietly: the session still starts normally, just
+without the format rules. So a Windows machine without Git Bash sees Claude behave
+as it always did, rather than an error.
+
+## Installing it does not apply it immediately
+
+The hook fires on `SessionStart`, so the session you install from will not have
+the rules loaded. Run `/clear` or restart after installing. This is the most
+common reason the plugin appears not to work.
 
 ## Feedback
 
@@ -80,7 +99,3 @@ Things worth reporting:
 ## Status
 
 v0.1.0 — in testing. Verified working on Claude Code 2.1.278 on macOS.
-
-This repo may move to a `byte5ai` organisation. If it does, GitHub redirects the
-old path, so an install done today keeps working without anyone re-adding the
-marketplace.
